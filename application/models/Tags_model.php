@@ -21,4 +21,15 @@ class Tags_model extends CI_Model {
         return $results->result();
     }
 
+    public function getTagsIdPorCosa($id) {
+        $this->db->select("ct.tags_id");
+        $this->db->from("cosas_tags ct");
+        $this->db->where("ct.cosas_id",$id);
+        $results=$this->db->get();
+        $resultado = array_map(function($tag) {
+            return $tag->tags_id;
+        }, $results->result());
+        return $resultado; 
+    }
+
 }

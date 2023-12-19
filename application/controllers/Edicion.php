@@ -11,20 +11,12 @@ class Edicion extends CI_Controller {
 
     public function index($id)
 	{
-		$data = $this->Cosas_model->getCosa($id);
-		//$vars = [
-		//	"id" => $id,
-		//	"nombre" => $nombre,
-		//	"cantidad" => $cantidad
-		//];
+		$data['cosa'] = $this->Cosas_model->getCosa($id);
+		$data['tags'] = $this->Cosas_model->consultaTags();
+		$data['tagsAsociados'] = $this->Tags_model->getTagsIdPorCosa($id);
+
 		$this->load->view('edicion_view',$data);
 	}	
-
-	//public function editar($id)
-	//{
-	//	//$id = $this->input->post("id");
-	//	$this->load->view('vista3',$id);
-	//}
 
 	public function updatear($id)
 	{
