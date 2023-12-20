@@ -22,6 +22,7 @@ class Edicion extends CI_Controller {
 	{
 		$nombre = $this->input->post('nombre');
     	$cantidad = $this->input->post('cantidad');
+		$opciones = $this->input->post('opciones[]');
 
 		$data = array(
 			"nombre" => $nombre,
@@ -29,6 +30,8 @@ class Edicion extends CI_Controller {
 		);
 
 		$this->Cosas_model->updatear($data, $id);
+		$this->Tags_model->eliminarTagsDeCosas($id);
+		$this->Tags_model->agregarTagsACosa($id,$opciones);
 
 		redirect('/Registro');
 	}

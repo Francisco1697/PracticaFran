@@ -32,4 +32,21 @@ class Tags_model extends CI_Model {
         return $resultado; 
     }
 
+    public function eliminarTagsDeCosas($id) {
+        $this->db->where('cosas_id', $id);
+        $this->db->delete('cosas_tags');
+    }
+    
+    public function agregarTagsACosa($id,$opciones) {
+        foreach ($opciones as $tag) {
+            $array = array(
+                'cosas_id' => $id,
+                'tags_id' => $tag
+            );
+
+            $this->db->insert("cosas_tags",$array);
+        }
+    
+    }
+
 }
