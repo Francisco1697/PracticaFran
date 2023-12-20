@@ -22,6 +22,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<button><a href="/Welcome">Volver</a></button>
 		<br><br>
 		<button><a href="/Carga">Agregar cosa</a></button>
+		<button><a href="/EdicionTags">Editar tags</a></button>
 	</form>
 	<br>
 	<table border='1'>
@@ -51,13 +52,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       						<input type="submit" value="Eliminar">
       					</form>
   						<button>
-						    <a href="/Edicion/index/<?php echo $cosa->id ?>">Editar</a>
+						    <a href="/EdicionCosa/index/<?php echo $cosa->id ?>">Editar</a>
 						</button>
 					</td> 
 				</tr>
 			<?php endforeach ?>
 		</tbody>
 	</table>
+	<br>
 </body>
 </html>
 
