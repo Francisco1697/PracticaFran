@@ -14,7 +14,7 @@ class Carga extends CI_Controller {
 		//$query = $this->db->get('cosas');
 		//$data['datos'] = $query->result();
 
-		$data['datos'] = $this->Cosas_model->consultaTags();
+		$data['datos'] = $this->Tags_model->consultaTags();
 
 		$this->load->view('carga_view', $data);
 	}	

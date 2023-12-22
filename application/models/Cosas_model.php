@@ -14,12 +14,6 @@ class Cosas_model extends CI_Model {
         return $this->buscarPorNombre(null);      
     }
 
-    public function consultaTags()
-    {
-        $query = $this->db->get('tags');
-        return $query->result();      
-    }
-
     public function agregarRegistro($data) 
     {
         $this->db->trans_start();
@@ -79,8 +73,21 @@ class Cosas_model extends CI_Model {
 
     public function updatear($data, $id) 
     {
+        $this->db->trans_start();
+
         $this->db->where('id', $id);
-        $this->db->update('cosas',$data);
+        $this->db->update('cosas',['nombre' => $data['nombre'],
+        'cantidad' => $data['cantidad']]);
+
+        $this->Tags_model->eliminarTagsDeCosas($id);
+
+        $this->Tags_model->agregarTagsACosa($id,$data['opciones[]']);
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback(); 
+        } else {
+            $this->db->trans_commit(); 
+        }
     }
 
     public function buscarPorNombre($nombre) 
