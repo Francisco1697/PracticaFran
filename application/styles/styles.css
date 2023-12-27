@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #1056b3;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.cuadro {
+    border: 2px solid #1056b3;
+    padding: 1px;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block; 
+    width: auto; 
+}
+
+.cuadro label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+button {
+    background-color: #25a2d3;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
