@@ -7,6 +7,7 @@ class EdicionCosa extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model("Cosas_model");
+		$this->load->library('session');
 	}
 
     public function index($id)
@@ -18,16 +19,24 @@ class EdicionCosa extends CI_Controller {
 		$this->load->view('edicion_view',$data);
 	}	
 
+	public function getFechaActual() {
+		return (date('Y-m-d H:i:s'));
+	}
+
 	public function updatear($id)
 	{
 		$nombre = $this->input->post('nombre');
     	$cantidad = $this->input->post('cantidad');
 		$opciones = $this->input->post('opciones[]');
+		$user_id = $this->session->userdata('user_id');
+		$fecha_actual = $this->getFechaActual();
 
 		$data = array(
 			"nombre" => $nombre,
 			"cantidad" => $cantidad,
-			"opciones[]" => $opciones
+			"opciones[]" => $opciones,
+			'user_id' => $user_id,
+			'fecha_actual' => $fecha_actual
 		);
 
 		$this->Cosas_model->updatear($data, $id);

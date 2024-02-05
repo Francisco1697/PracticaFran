@@ -8,6 +8,7 @@ class Registro extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model("Cosas_model");
+		$this->load->library('session');
 	}
 
     public function index()
@@ -15,8 +16,19 @@ class Registro extends CI_Controller {
 		$data['cosas'] = $this->Cosas_model->buscarPorNombre(
 			$this->input->get('search')
 		);
-		$this->load->view('registro_view', $data);
 
+		if ($this->session->userdata('user_id')) 
+		{	
+			$this->load->view('registro_view', $data);	
+		} else {
+			redirect('/Welcome'); 
+		}
+	}
+
+	public function cerrar_sesion() 
+	{
+		$this->session->sess_destroy();
+		redirect('/Welcome');
 	}
 }
 

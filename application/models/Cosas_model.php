@@ -7,6 +7,7 @@ class Cosas_model extends CI_Model {
     public function __construct()
     {
         $this->load->model('Tags_model');
+        $this->load->library('session');
     }
 
     public function consultaBase()
@@ -21,6 +22,8 @@ class Cosas_model extends CI_Model {
         $this->db->insert("cosas",[
             'nombre' => $data['nombre'],
             'cantidad' => $data['cantidad'],
+            'created_by' => $data['user_id'],
+            'created_at' => $data['fecha_actual']
         ]);
         
         $cosa_id = $this->db->insert_id();
@@ -44,13 +47,14 @@ class Cosas_model extends CI_Model {
             }
     }
 
-    public function eliminar($id) 
+    public function eliminarCosa($id,$data) 
     {
-        $this->db->where('cosas_id',$id);
-        $this->db->delete('cosas_tags');
-
         $this->db->where('id', $id);
-		$this->db->delete('cosas');
+        $this->db->update('cosas',[
+            'borrado_logico' => '1',
+            'deleted_by' => $data['user_id'],
+            'deleted_at' => $data['fecha_actual'],
+        ]);
     }
 
     public function getCosa($id)
@@ -76,8 +80,12 @@ class Cosas_model extends CI_Model {
         $this->db->trans_start();
 
         $this->db->where('id', $id);
-        $this->db->update('cosas',['nombre' => $data['nombre'],
-        'cantidad' => $data['cantidad']]);
+        $this->db->update('cosas',[
+            'nombre' => $data['nombre'],
+            'cantidad' => $data['cantidad'],
+            'modified_by' => $data['user_id'],
+            'modified_at' => $data['fecha_actual']
+        ]);
 
         $this->Tags_model->eliminarTagsDeCosas($id);
 
@@ -95,6 +103,7 @@ class Cosas_model extends CI_Model {
         if ($nombre !== null ) {
             $this->db->like('nombre', $nombre);
         }
+        $this->db->where('borrado_logico = 0');
 	    $query = $this->db->get('cosas');
 	    $cosas = $query->result();
 

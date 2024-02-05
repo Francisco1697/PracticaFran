@@ -55,10 +55,10 @@ class Tags_model extends CI_Model {
     
     }
 
-    public function actualizarTag($id, $nombre) {
+    public function actualizarTag($id, $nombre, $user_id, $fecha_actual) {
 
         $this->db->where('id',$id);
-        $this->db->update('tags',['nombre'=>$nombre]);
+        $this->db->update('tags',['nombre'=>$nombre, 'modified_by'=>$user_id, 'modified_at'=>$fecha_actual]);
     }
 
     public function eliminarTag($id) {
@@ -76,9 +76,9 @@ class Tags_model extends CI_Model {
         }
     }
 
-    public function agregarTag($nombre) {
+    public function agregarTag($nombre,$user_id,$fecha_actual) {
 
-        $this->db->insert('tags',['nombre' => $nombre]);
+        $this->db->insert('tags',['nombre' => $nombre, 'created_by' => $user_id, 'created_at' => $fecha_actual]);
     }
 
 }

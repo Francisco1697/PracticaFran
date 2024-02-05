@@ -13,8 +13,8 @@ header {
 
 form {
     max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 5px auto;
+    padding: 10px;
     border: 1px solid #ddd;
 }
 
@@ -26,7 +26,7 @@ label {
 .cuadro {
     border: 2px solid #1056b3;
     padding: 1px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     position: relative;
     display: inline-block; 
     width: auto; 
@@ -45,4 +45,52 @@ button {
     cursor: pointer;
     text-decoration: none;
     display: inline-block;
+}
+
+.things-table {
+    border-collapse: collapse;
+    width: 50%; 
+    margin: 10px auto; 
+}
+
+.things-table th, .things-table td {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: left;
+}
+
+.things-table td {
+    font-size: 14px; 
+}
+
+.search-form {
+    margin: 10px auto; 
+}
+
+.search-form input[type="search"],
+.search-form button {
+    margin: 5px;
+    padding: 8px;
+}
+
+.action-buttons {
+    margin: 8px auto; 
+}
+
+.action-buttons button {
+    margin-right: 10px;
+    padding: 10px;
+}
+
+.edit-btn, .add-btn, .edit-tags-btn, .reset-btn, .back-btn {
+    background-color: #25a2d3;
+    color: #fff;
+    border: none;
+    padding: 8px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.edit-btn:hover, .add-btn:hover, .edit-tags-btn:hover, .reset-btn:hover, .back-btn:hover {
+    background-color: #25a2d3;
 }

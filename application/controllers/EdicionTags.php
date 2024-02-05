@@ -8,6 +8,7 @@ class EdicionTags extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model("Tags_model");
+		$this->load->library('session');
 	}
 
     public function index()
@@ -20,10 +21,16 @@ class EdicionTags extends CI_Controller {
     public function actualizarTag($id)
 	{
 		$nombre = $this->input->post('nombre');
+		$user_id = $this->session->userdata('user_id');
+		$fecha_actual = $this->getFechaActual();
 
-		$this->Tags_model->actualizarTag($id,$nombre);
+		$this->Tags_model->actualizarTag($id,$nombre,$user_id,$fecha_actual);
 
 		redirect('/EdicionTags');
+	}
+
+	public function getFechaActual() {
+		return (date('Y-m-d H:i:s'));
 	}
 
 	public function eliminarTag() {
@@ -42,8 +49,10 @@ class EdicionTags extends CI_Controller {
 	public function agregarTag() {
 
 		$nombretag = $this->input->post('nombre');
+		$user_id = $this->session->userdata('user_id');
+		$fecha_actual = $this->getFechaActual();
 
-		$this->Tags_model->agregarTag($nombretag);
+		$this->Tags_model->agregarTag($nombretag,$user_id,$fecha_actual);
 
 		redirect('/EdicionTags');
 	}
