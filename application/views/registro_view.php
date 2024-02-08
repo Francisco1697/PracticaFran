@@ -65,7 +65,7 @@
                         }
                     }
                 };
-                xhr.send(); // ¡Agrega esta línea para enviar la solicitud!
+                xhr.send();
             });
 
             const deleteButtons = document.querySelectorAll('.delete-btn');
