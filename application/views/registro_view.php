@@ -50,9 +50,22 @@
                 xhr.send();
             });
 
-            resetButton.addEventListener('click', function() {
-                // Recarga la página para reiniciar la búsqueda
-                location.reload();
+            resetButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const searchInput = document.getElementById('search-input').value.trim();
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `/Registro/buscar_registros?search=${''}`, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Actualiza el cuerpo de la tabla con los resultados de la búsqueda
+                            document.querySelector('.things-table').innerHTML = xhr.responseText;
+                        } else {
+                            alert('Ha ocurrido un error al realizar la búsqueda.');
+                        }
+                    }
+                };
+                xhr.send(); // ¡Agrega esta línea para enviar la solicitud!
             });
 
             const deleteButtons = document.querySelectorAll('.delete-btn');
