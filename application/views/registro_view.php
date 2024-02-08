@@ -9,10 +9,10 @@
 </head>
 <body>
 
-    <form method="get" class="search-form">
-        <input type="search" name="search" placeholder="Buscar una cosa" value="<?= $this->input->get('search') ?>" autofocus>
+    <form method="get" class="search-form" id="search-form">
+        <input type="search" name="search" id="search-input" placeholder="Buscar una cosa" value="<?= $this->input->get('search') ?>" autofocus>
         <button type="submit">Buscar</button>
-        <button class="reset-btn"><a href="Registro">Reiniciar</a></button>
+        <button type="button" class="reset-btn" id="reset-btn">Reiniciar</button>
         <button class="back-btn"><a href="/Registro/cerrar_sesion">Cerrar sesión</a></button>
     </form>
 
@@ -22,72 +22,69 @@
     </div>
 
     <table class="things-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Cantidad</th>
-                <th>Tags</th>
-                <th>Opciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($cosas as $cosa) : ?>
-                <tr>
-                    <td><?= $cosa->id ?></td>
-                    <td><?= $cosa->nombre ?></td>
-                    <td><?= $cosa->cantidad ?></td>
-                    <td>
-                    <? foreach ($cosa->tags as $tag) {
-                        echo $tag->nombre . "<br>";
-                    }?>
-                    </td>
-                    <td> 
-                        <form action="<?= base_url('/Carga/eliminarCosa'); ?>" method="post">
-                            <input type="hidden" name="id" value="<?= $cosa->id; ?>">
-                            <input type="submit" class="delete-btn" data-id="<?= $cosa->id ?>" value="Eliminar">
-                        </form>
-                        <button class="edit-btn">
-                            <a href="/EdicionCosa/index/<?= $cosa->id ?>">Editar</a>
-                        </button>
-                    </td> 
-                </tr>
-            <?php endforeach ?>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const deleteButtons = document.querySelectorAll('.delete-btn');
-
-                    deleteButtons.forEach(button => {
-                        button.addEventListener('click', function(e) {
-                            e.preventDefault();
-
-                            const id = this.getAttribute('data-id');
-                            const confirmation = confirm('¿Estás seguro de que quieres eliminar este registro?');
-
-                            if (confirmation) {
-                                // Envía una solicitud AJAX al servidor para eliminar el registro
-                                const xhr = new XMLHttpRequest();
-                                xhr.open('POST', this.parentElement.action, true);
-                                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                                xhr.onreadystatechange = function() {
-                                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                                        if (xhr.status === 200) {
-                                            // Elimina la fila de la tabla de manera reactiva
-                                            const tr = button.closest('tr');
-                                            tr.parentNode.removeChild(tr);
-                                        } else {
-                                            alert('Ha ocurrido un error al eliminar el registro.');
-                                        }
-                                    }
-                                };
-                                xhr.send('id=' + encodeURIComponent(id));
-                            }
-                        });
-                    });
-                });
-            </script>
-        </tbody>
+        <?php $this->load->view('registrosub_view', $cosas); ?>
     </table>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.getElementById('search-form');
+            const resetButton = document.getElementById('reset-btn');
+
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const searchInput = document.getElementById('search-input').value.trim();
+
+                // Envía una solicitud AJAX al servidor para buscar cosas
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `/Registro/buscar_registros?search=${searchInput}`, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Actualiza el cuerpo de la tabla con los resultados de la búsqueda
+                            document.querySelector('.things-table').innerHTML = xhr.responseText;
+                        } else {
+                            alert('Ha ocurrido un error al realizar la búsqueda.');
+                        }
+                    }
+                };
+                xhr.send();
+            });
+
+            resetButton.addEventListener('click', function() {
+                // Recarga la página para reiniciar la búsqueda
+                location.reload();
+            });
+
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const id = this.getAttribute('data-id');
+                    const confirmation = confirm('¿Estás seguro de que quieres eliminar este registro?');
+
+                    if (confirmation) {
+                        // Envía una solicitud AJAX al servidor para eliminar el registro
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', this.parentElement.action, true);
+                        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        xhr.onreadystatechange = function() {
+                            if (xhr.readyState === XMLHttpRequest.DONE) {
+                                if (xhr.status === 200) {
+                                    // Elimina la fila de la tabla de manera reactiva
+                                    const tr = button.closest('tr');
+                                    tr.parentNode.removeChild(tr);
+                                } else {
+                                    alert('Ha ocurrido un error al eliminar el registro.');
+                                }
+                            }
+                        };
+                        xhr.send('id=' + encodeURIComponent(id));
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -13,15 +13,13 @@ class Registro extends CI_Controller {
 
     public function index()
 	{
-		$data['cosas'] = $this->Cosas_model->buscarPorNombre(
-			$this->input->get('search')
-		);
+		$data['cosas'] = $this->Cosas_model->getTodasLasCosas();
 
-		if ($this->session->userdata('user_id')) 
-		{	
-			$this->load->view('registro_view', $data);	
+		if ($this->session->userdata('user_id'))
+		{
+			$this->load->view('registro_view', $data);
 		} else {
-			redirect('/Welcome'); 
+			redirect('/Welcome');
 		}
 	}
 
@@ -29,6 +27,15 @@ class Registro extends CI_Controller {
 	{
 		$this->session->sess_destroy();
 		redirect('/Welcome');
+	}
+
+	public function buscar_registros()
+	{
+		$data['cosas'] = $this->Cosas_model->buscarPorNombre(
+			$this->input->get('search')
+		);
+
+		$this->load->view('registrosub_view', $data);
 	}
 }
 

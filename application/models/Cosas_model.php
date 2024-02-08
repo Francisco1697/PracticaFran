@@ -66,6 +66,18 @@ class Cosas_model extends CI_Model {
         return $results->row();
     }
 
+    public function getTodasLasCosas()
+    {
+        $query = $this->db->where('borrado_logico = 0');
+	    $query = $this->db->get('cosas');
+	    $cosas = $query->result();
+
+        foreach ($cosas as $key => $cosa) {
+            $cosas[$key]->tags= $this->Tags_model->buscarTagsPorCosa($cosa->id);
+        }
+        return $cosas;
+    }
+
     public function getTag($id)
     {
         $this->db->select("c.*");
