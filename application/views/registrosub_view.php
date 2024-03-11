@@ -10,21 +10,21 @@
 <tbody>
     <?php foreach ($cosas as $cosa) : ?>
         <tr>
-            <td><?= $cosa->id ?></td>
-            <td><?= $cosa->nombre ?></td>
-            <td><?= $cosa->cantidad ?></td>
+            <td><?= $cosa->getId() ?></td>
+            <td><?= $cosa->getNombre() ?></td>
+            <td><?= $cosa->getCantidad() ?></td>
             <td>
-            <? foreach ($cosa->tags as $tag) {
-                echo $tag->nombre . "<br>";
-            }?>
+                <? foreach ($cosa->getTags() as $tag) {
+                    echo $tag->getNombre() . "<br>";
+                }?>
             </td>
             <td> 
                 <form action="<?= base_url('/Carga/eliminarCosa'); ?>" method="post">
-                    <input type="hidden" name="id" value="<?= $cosa->id; ?>">
-                    <input type="submit" class="delete-btn" data-id="<?= $cosa->id ?>" value="Eliminar">
+                    <input type="hidden" name="id" value="<?= $cosa->getId(); ?>">
+                    <input type="submit" class="delete-btn" data-id="<?= $cosa->getId() ?>" value="Eliminar">
                 </form>
                 <button class="edit-btn">
-                    <a href="/EdicionCosa/index/<?= $cosa->id ?>">Editar</a>
+                    <a href="/EdicionCosa/index/<?= $cosa->getId() ?>">Editar</a>
                 </button>
             </td> 
         </tr>

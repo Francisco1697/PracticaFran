@@ -94,3 +94,25 @@ button {
 .edit-btn:hover, .add-btn:hover, .edit-tags-btn:hover, .reset-btn:hover, .back-btn:hover {
     background-color: #25a2d3;
 }
+
+header.frannn {
+    background-color: darkslategrey;
+    max-width: auto;
+    max-height: 200px;
+    margin: 0;
+    display: flex;
+}
+
+header h1 {
+    text-align: left;
+    width: 800px;
+    margin: 0;
+    padding: 20px;
+}
+
+header div{
+    text-align: center;
+    height: 15px;
+    padding-right: 20px;
+    vertical-align: center;
+}

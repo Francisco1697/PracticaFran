@@ -1,19 +1,26 @@
 <?php
+
+use Entities\Cosas;
+use Entities\Tags;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 class Registro extends CI_Controller {
+
+	public ?Cosas_model $Cosas_model = null;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->model("Cosas_model");
 		$this->load->library('session');
+		$this->load->library('doctrine');
 	}
 
     public function index()
 	{
-		$data['cosas'] = $this->Cosas_model->getTodasLasCosas();
+		$data['cosas'] = $this->doctrine->em->getRepository(Cosas::class)->findAll();
 
 		if ($this->session->userdata('user_id'))
 		{
