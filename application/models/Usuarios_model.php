@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
+#[AllowDynamicProperties]
 class Usuarios_model extends CI_Model {
 
     public function verificar_credenciales($datos) {
