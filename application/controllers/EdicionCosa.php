@@ -8,14 +8,14 @@ class EdicionCosa extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model("Cosas_model");
+		$this->load->model("Tags_model");
 		$this->load->library('session');
 	}
 
     public function index($id)
 	{
 		$data['cosa'] = $this->Cosas_model->getCosa($id);
-		$data['tags'] = $this->Tags_model->consultaTags();
-		$data['tagsAsociados'] = $this->Tags_model->getTagsIdPorCosa($id);
+		$data['tags'] = $this->Tags_model->buscarTags();
 
 		$this->load->view('edicion_view',$data);
 	}	

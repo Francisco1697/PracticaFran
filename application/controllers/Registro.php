@@ -20,7 +20,7 @@ class Registro extends CI_Controller {
 
     public function index()
 	{
-		$data['cosas'] = $this->doctrine->em->getRepository(Cosas::class)->findAll();
+		$data['cosas'] = $this->doctrine->em->getRepository(Cosas::class)->findBy(['borrado_logico' => '0']);
 
 		if ($this->session->userdata('user_id'))
 		{

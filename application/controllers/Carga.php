@@ -1,14 +1,21 @@
 <?php
+
+use Entities\Tags;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 #[AllowDynamicProperties]
 class Carga extends CI_Controller {
 
+
+
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model("Cosas_model");
 		$this->load->library('session');
+		$this->load->library('doctrine');
+		$this->load->model('Cosas_model');
+		$this->load->model('Tags_model');
 	}
 
     public function index()
@@ -16,49 +23,56 @@ class Carga extends CI_Controller {
 		//$query = $this->db->get('cosas');
 		//$data['datos'] = $query->result();
 
-		$data['datos'] = $this->Tags_model->consultaTags();
+		$data['datos'] = $this->doctrine->em->getRepository(Tags::class)->findAll();
 
 		$this->load->view('carga_view', $data);
 	}	
 
-	public function getFechaActual() {
-		return (date('Y-m-d H:i:s'));
-	}
-
-	public function agregarRegistro()
+	public function submit()
 	{
-    	$nombre = $this->input->post('nombre');
-    	$cantidad = $this->input->post('cantidad');
-		$opciones = $this->input->post('opciones[]');
-		$user_id = $this->session->userdata('user_id');
-		$fecha_actual = $this->getFechaActual();
+    	$nombre = trim($this->input->post('nombre'));
+    	$cantidad = (int) $this->input->post('cantidad');
+		$tagsId = (array) $this->input->post('opciones[]');
 
-    	$data = array(
-    	    'nombre' => $nombre,
-    	    'cantidad' => $cantidad,
-			'opciones' => $opciones,
-			'user_id' => $user_id,
-			'fecha_actual' => $fecha_actual
-    	);
-		
-		$this->Cosas_model->agregarRegistro($data);
+		$resultado = $this->Cosas_model->agregarRegistro($nombre, $cantidad, $tagsId);
 
-    	redirect('/Registro');  
+		if ($resultado) {
+			echo <<<HTML
+			<script>
+				alert('La cosa se creó correctamente')
+				window.location.href='/Registro'
+			</script>
+			HTML;
+		} else {
+			echo <<<HTML
+			<script>
+				alert('Ya existe una cosa con ese nombre')
+				window.location.href='/Carga/index'
+			</script>
+			HTML;
+		}
 	}
 
 	public function eliminarCosa()
 	{
 		$id = $this->input->post('id');
-		$user_id = $this->session->userdata('user_id');
-		$fecha_actual = $this->getFechaActual();
-
-		$data = array(
-			'user_id' => $user_id,
-			'fecha_actual' => $fecha_actual
-		);
 		
-		$this->Cosas_model->eliminarCosa($id,$data);
+		$resultado = $this->Cosas_model->eliminarCosa($id);
 		
-		redirect('/Registro');
+		if ($resultado) {
+			echo <<<HTML
+			<script>
+				alert('La cosa se eliminó correctamente')
+				window.location.href='/Registro'
+			</script>
+			HTML;
+		} else {
+			echo <<<HTML
+			<script>
+				alert('La cosa no se pudo eliminar')
+				window.location.href='/Registro'
+			</script>
+			HTML;
+		}
 	}
 }

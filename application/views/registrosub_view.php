@@ -14,9 +14,9 @@
             <td><?= $cosa->getNombre() ?></td>
             <td><?= $cosa->getCantidad() ?></td>
             <td>
-                <? foreach ($cosa->getTags() as $tag) {
+                <?php foreach ($cosa->getTags() as $tag) :
                     echo $tag->getNombre() . "<br>";
-                }?>
+                endforeach ?>
             </td>
             <td> 
                 <form action="<?= base_url('/Carga/eliminarCosa'); ?>" method="post">

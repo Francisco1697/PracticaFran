@@ -1,4 +1,5 @@
 <?php
+
 namespace Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,24 +11,17 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Types;
 use Doctrine\ORM\Mapping\Id;
 use Repositories\CosasRepository;
 
 #[Table(name: 'cosas')]
 #[Entity(repositoryClass: CosasRepository::class, readOnly: false)]
-
 class Cosas
 {
-    #[JoinTable(name: 'cosas_tags')]
-    #[JoinColumn(name: 'cosas_id', referencedColumnName: 'id')]
-    #[InverseJoinColumn(name: 'tags_id', referencedColumnName: 'id')]
-    #[ManyToMany(targetEntity: Tags::class)]
-
-    private Collection $tags;
-
-    #[Column, Id]
-    private int $id;
+    #[Column, Id, GeneratedValue]
+    private ?int $id = null;
      
     #[Column]
     private int $modified_by;
@@ -45,7 +39,6 @@ class Cosas
     private \DateTimeImmutable $deleted_at;
     
     public function __construct(
-
         #[Column]
         private string $nombre,
         #[Column]
@@ -54,15 +47,21 @@ class Cosas
         private int $created_by,
         #[Column]
         private \DateTimeImmutable $created_at,
+        /**
+         * @var Collection<int, Tags>
+         */
+        #[ManyToMany(targetEntity: Tags::class)]
+        #[JoinTable(name: 'cosas_tags')]
+        #[JoinColumn(name: 'cosas_id', referencedColumnName: 'id')]
+        #[InverseJoinColumn(name: 'tags_id', referencedColumnName: 'id')]
+        private Collection $tags
     ) {
         $this->setNombre($nombre);
-        $this->setCreatedBy($created_by);
-        $this->setCreatedAt($created_at);
     }
 
     // ACA COMIENZAN LOS SETERS Y GETERS //
 
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
 
@@ -70,63 +69,78 @@ class Cosas
         return $this->nombre;
     }
 
-    private function setNombre(string $nombre): string {
-        return $this->nombre = $nombre;
+    public function setNombre(string $nombre): void {
+        if (trim($nombre) === '') {
+            throw new \Exception('Que haces hijo de puttaa?');
+        }
+        $this->nombre = $nombre;
     }
 
     public function getCantidad(): int {
         return $this->cantidad;
     }
 
-    public function setCantidad(int $cantidad): int {
-        return $this->cantidad = $cantidad;
+    public function setCantidad(int $cantidad): void {
+        $this->cantidad = $cantidad;
     }
 
     public function getCreatedBy(): int {
         return $this->created_by;
     }
 
-    public function setCreatedBy(int $id): int {
-        return $this->created_by = $id;
+    public function setCreatedBy(int $id): void {
+        $this->created_by = $id;
     }
 
     public function getCreatedAt(): \DateTimeImmutable {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $fecha): \DateTimeImmutable {
-        return $this->created_at = $fecha;
+    public function setCreatedAt(\DateTimeImmutable $fecha): void {
+        $this->created_at = $fecha;
     }
 
     public function getModifiedBy(): int {
         return $this->modified_by;
     }
 
-    public function setModifiedBy(int $id): int {
-        return $this->modified_by = $id;
+    public function setModifiedBy(int $id): void {
+        $this->modified_by = $id;
     }
 
     public function getModifiedAt(): \DateTimeImmutable {
         return $this->modified_at;
     }
 
-    public function setModifiedAt(\DateTimeImmutable $fecha): \DateTimeImmutable {
-        return $this->created_at = $fecha;
+    public function setModifiedAt(\DateTimeImmutable $fecha): void {
+        $this->created_at = $fecha;
     }
 
     public function getBorradoLogico(): bool {
         return $this->borrado_logico;
     }
 
+    public function setBorradoLogico(): void {
+        $this->borrado_logico = true;
+    }
+
     public function getDeletedBy(): int {
         return $this->deleted_by;
+    }
+
+    public function setDeletedBy(int $id): void {
+        $this->deleted_by = $id;
     }
 
     public function getDeletedAt(): \DateTimeImmutable {
         return $this->deleted_at;
     }
 
-    public function getTags() {
+    public function setDeletedAt(\DateTimeImmutable $fecha): void {
+        $this->deleted_at = $fecha;
+    }
+
+    public function getTags(): Collection {
         return $this->tags;
     }
 

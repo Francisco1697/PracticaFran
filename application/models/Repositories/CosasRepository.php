@@ -7,5 +7,7 @@ use Repositories\GenericRepository;
 
 class CosasRepository extends EntityRepository
 {
-
+    public function findByNameLike() {
+        
+    }
 }

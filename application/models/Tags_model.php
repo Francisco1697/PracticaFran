@@ -1,11 +1,20 @@
 <?php
+
+use Entities\Tags;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 #[AllowDynamicProperties]
 class Tags_model extends CI_Model {
 
-    public function buscarTagsPorCosa($id) {
+    public function __construct()
+    {
+		$this->load->library('doctrine');
+    }
+
+    public function buscarTagsPorCosa($id) 
+    {
         $this->db->select("t.*");
         $this->db->from("cosas_tags ct");
         $this->db->join("tags t", "t.id = ct.tags_id");
@@ -14,10 +23,10 @@ class Tags_model extends CI_Model {
         return $results->result();
     }
 
-    public function consultaTags()
+    public function buscarTags(): array
     {
-        $query = $this->db->get('tags');
-        return $query->result();      
+        $tags = $this->doctrine->em->getRepository(Tags::class)->findAll();
+        return $tags;
     }
 
     public function buscarTagsPorNombre($nombre) {

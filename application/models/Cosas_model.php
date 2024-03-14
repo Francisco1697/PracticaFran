@@ -1,4 +1,9 @@
 <?php
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Entities\Tags;
+use Entities\Cosas;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -7,8 +12,8 @@ class Cosas_model extends CI_Model {
 
     public function __construct()
     {
-        $this->load->model('Tags_model');
         $this->load->library('session');
+		$this->load->library('doctrine');
     }
 
     public function consultaBase()
@@ -16,55 +21,63 @@ class Cosas_model extends CI_Model {
         return $this->buscarPorNombre(null);      
     }
 
-    public function agregarRegistro($data) 
+    public function agregarRegistro(string $nombre, int $cantidad, array $tagsId): bool
     {
-        $this->db->trans_start();
 
-        $this->db->insert("cosas",[
-            'nombre' => $data['nombre'],
-            'cantidad' => $data['cantidad'],
-            'created_by' => $data['user_id'],
-            'created_at' => $data['fecha_actual']
-        ]);
-        
-        $cosa_id = $this->db->insert_id();
-
-        if ($data['opciones'] != null) {
-            foreach ($data['opciones'] as $dato) {
-
-                $array = array(
-                    'cosas_id' => $cosa_id,
-                    'tags_id' => $dato
-                );
-                $this->db->insert("cosas_tags",$array);
-
-            }
+        if ($this->doctrine->em->getRepository(Cosas::class)->findOneBy(['nombre'=> $nombre])) {
+            return false;
         }
 
-            if ($this->db->trans_status() === FALSE) {
-                $this->db->trans_rollback(); 
-            } else {
-                $this->db->trans_commit(); 
-            }
+        try {
+            $fecha_actual = new \DateTimeImmutable();
+            $usuario = $this->session->userdata('user_id');
+            $tags = new ArrayCollection($this->doctrine->em->getRepository(Tags::class)->findBy(['id'=> $tagsId]));
+
+            $this->doctrine->em->getConnection()->beginTransaction();
+
+            $cosa = new \Entities\Cosas($nombre, $cantidad, $usuario, $fecha_actual, $tags);
+
+            $this->doctrine->em->persist($cosa);
+            $this->doctrine->em->flush();
+
+            $this->doctrine->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->doctrine->em->getConnection()->rollBack();
+            throw new \Exception('Ocurrio un error al intentar crear la cosa',0,$e);
+        }
+        return true;
     }
 
-    public function eliminarCosa($id,$data) 
+    public function eliminarCosa($id) 
     {
-        $this->db->where('id', $id);
-        $this->db->update('cosas',[
-            'borrado_logico' => '1',
-            'deleted_by' => $data['user_id'],
-            'deleted_at' => $data['fecha_actual'],
-        ]);
+        if (!$this->doctrine->em->getRepository(Cosas::class)->findBy(['id' => $id])) {
+            return false;
+        }
+        
+        try {
+            $fecha_actual = new \DateTimeImmutable();
+		    $usuario = $this->session->userdata('user_id');
+
+            $this->doctrine->em->getConnection()->beginTransaction();
+
+            $cosa = $this->doctrine->em->getRepository(Cosas::class)->findOneById(['id' => $id]);
+            $cosa->setBorradoLogico(1);
+            $cosa->setDeletedBy($usuario);
+            $cosa->setDeletedAt($fecha_actual);
+
+            $this->doctrine->em->flush();
+            $this->doctrine->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->doctrine->em->getConnection()->rollBack();
+            throw new \Exception('Ocurrio un error al intentar eliminar la cosa',0,$e);
+        }
+        return true;
     }
 
-    public function getCosa($id)
+    public function getCosa(int $id): ?Cosas
     {
-        $this->db->select("c.*");
-        $this->db->from("cosas c");
-        $this->db->where("c.id",$id);
-        $results=$this->db->get();
-        return $results->row();
+        $cosa = $this->doctrine->em->find(Cosas::class, $id);
+        return $cosa;
     }
 
     public function getTodasLasCosas()

@@ -14,7 +14,7 @@
         <h1>Nueva cosa</h1>
     </header>
 
-    <form action="/Carga/agregarRegistro" method="POST">
+    <form action="/Carga/submit" method="POST">
         <label for="nombre">Nombre:</label>
         <input type="text" name="nombre" id="nombre" required>
         <br><br>
@@ -25,8 +25,8 @@
         <div class="cuadro">
             <?php foreach ($datos as $dato): ?>
                 <label>
-                    <span><?= $dato->nombre ?></span>
-                    <input type="checkbox" name="opciones[]" value="<?= $dato->id; ?>">
+                    <span><?= $dato->getNombre() ?></span>
+                    <input type="checkbox" name="opciones[]" value="<?= $dato->getId(); ?>">
                 </label>
             <?php endforeach ?>
         </div>
